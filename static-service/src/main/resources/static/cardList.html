@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>My Card List</title>
+
+    <!-- Semantic UI CSS -->
+    <link rel="stylesheet" href="/lib/Semantic-UI-CSS-master/semantic.css">
+
+    <!-- Ton CSS personnalisé -->
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/cardList.css">
+
+    <!-- jQuery local -->
+    <script src="/lib/jquery-3.3.1.min.js"></script>
+
+    <!-- Semantic UI JS -->
+    <script src="/lib/Semantic-UI-CSS-master/semantic.js"></script>
+
+    <!-- Ton JS personnalisé -->
+    <script src="/custom.js"></script>
+</head>
+
+<body>
+
+<!-- En-tête utilisateur -->
+<div class="ui clearing segment">
+    <h3 class="ui right floated header">
+        <i class="user circle outline icon"></i>
+        <div class="content">
+            <span id="userNameId">Jdoe</span>
+            <div class="sub header"><span>5000</span>$</div>
+        </div>
+    </h3>
+
+    <h3 class="ui left floated header">
+        <i class="money icon"></i>
+        <div class="content">
+            SELL
+            <div class="sub header">Sell your card to get money</div>
+        </div>
+    </h3>
+
+    <div class="ui right floated">
+        <a href="market.html" class="ui blue button">
+            <i class="cart icon"></i> Go to Market
+        </a>
+    </div>
+</div>
+
+<!-- Zone centrale -->
+<div class="ui grid">
+    <!-- Colonne principale centrée -->
+    <div class="twelve wide centered column">
+        <h3 class="ui center aligned header">My Card List</h3>
+        <table class="ui fixed selectable single line celled table" id="cardListId">
+            <thead>
+            <tr>
+                <th style="text-align: center;">Name</th>
+                <th style="text-align: center;">Description</th>
+                <th style="text-align: center;">Element</th>
+                <th style="text-align: center;">HP</th>
+                <th style="text-align: center;">Energy</th>
+                <th style="text-align: center;">Defense</th>
+                <th style="text-align: center;">Attack</th>
+                <th style="text-align: center;">Price</th>
+                <th style="text-align: center;"></th>
+            </tr>
+            </thead>
+            <tbody id="tableContent"></tbody>
+        </table>
+    </div>
+
+    <!-- Colonne droite pour détails -->
+    <div class="four wide column">
+        <div id="card"></div>
+    </div>
+</div>
+
+<!-- Template pour les cartes -->
+<template id="row">
+    <tr>
+        <td style="text-align: center;">{{name}}</td>
+        <td style="text-align: center;">{{description}}</td>
+        <td style="text-align: center;">{{element}}</td>
+        <td style="text-align: center;">{{hp}}</td>
+        <td style="text-align: center;">{{energy}}</td>
+        <td style="text-align: center;">{{defense}}</td>
+        <td style="text-align: center;">{{attack}}</td>
+        <td style="text-align: center;">{{price}}</td>
+        <td style="text-align: center;">
+            <div class="ui vertical animated button sell-btn"
+                 data-id="{{id}}"
+                 data-price="{{price}}"
+                 tabindex="0">
+                <div class="hidden content">Sell</div>
+                <div class="visible content"><i class="shop icon"></i></div>
+            </div>
+        </td>
+    </tr>
+</template>
+
+<!-- Initialisation JS -->
+<script>
+    $(function () {
+        $('.ui.dropdown').dropdown();
+        $("#card").load("/part/card-full.html");
+
+        if (typeof loadUserInfo === "function") loadUserInfo();
+        if (typeof loadUserCards === "function") loadUserCards();
+    });
+</script>
+
+</body>
+</html>

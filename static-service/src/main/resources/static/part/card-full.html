@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Détail de la carte</title>
+    <link rel="stylesheet" href="/lib/Semantic-UI-CSS-master/semantic.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .card .description {
+            margin-top: 0.5em;
+            white-space: pre-wrap;
+        }
+        .card .stats div {
+            margin-bottom: 0.3em;
+        }
+        .card .image img {
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+
+<div class="ui centered card" style="width: 300px; margin-top: 20px;">
+    <!-- En-tête -->
+    <div class="content">
+        <div class="header center aligned" id="cardNameId">Nom de la Carte</div>
+        <div class="meta left aligned" style="margin-top: 4px;">
+            <span id="cardElementId" class="ui label">Élément</span>
+        </div>
+    </div>
+
+    <!-- Image principale -->
+    <div class="image imageCard">
+        <img id="cardImgId" src="https://via.placeholder.com/300x200.png?text=Card" alt="Image de la carte">
+    </div>
+
+    <!-- Description -->
+    <div class="content">
+        <textarea id="cardDescriptionId" readonly rows="4" class="ui fluid input" style="border: none; resize: none; background: transparent; font-size: 0.95em;"></textarea>
+    </div>
+
+    <!-- Stats -->
+    <div class="extra content stats">
+        <div>❤️ HP : <strong id="cardHPId">0</strong></div>
+        <div>⚡ Énergie : <strong id="cardEnergyId">0</strong></div>
+        <div>🛡️ Défense : <strong id="cardDefenceId">0</strong></div>
+        <div>🗡️ Attaque : <strong id="cardAttackId">0</strong></div>
+    </div>
+
+    <!-- Prix -->
+    <div class="ui bottom attached button">
+        💰 <strong id="cardPriceId">0 $</strong>
+    </div>
+</div>
+
+</body>
+</html>

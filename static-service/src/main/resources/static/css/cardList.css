@@ -1,0 +1,26 @@
+/* Limiter et centrer le tableau */
+
+#cardListId {
+    table-layout: fixed;
+    max-width: 90%;             /* Ne pas dépasser 90% de la largeur écran */
+    margin: 0 auto;             /* Centre horizontalement */
+    border-collapse: collapse; /* Pour éviter les décalages */
+}
+
+/* Aligner et styliser le contenu des cellules */
+#cardListId th,
+#cardListId td {
+    text-align: center !important;       /* Forcer le centrage */
+    vertical-align: middle !important;   /* Aligner verticalement */
+    white-space: nowrap;                 /* Empêche le retour à la ligne */
+    overflow: hidden;                    /* Cache le débordement */
+    text-overflow: ellipsis;            /* Ajoute "..." si trop long */
+    padding: 12px;                       /* Un peu d'espace intérieur */
+}
+
+/* Pour améliorer la lisibilité */
+#cardListId th {
+    background-color: #f9f9f9;
+    font-weight: bold;
+}
+

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name= "viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartes Héros - Compactes & Emojis</title>
+    <link rel="stylesheet" href="css/custom.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- jQuery depuis CDN -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+    <!-- Semantic UI CSS + JS depuis CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+</head>
+
+<body>
+<div class="ui container" style="margin-top: 2em;">
+    <h2 class="ui center aligned header">Cartes de Héros</h2>
+    <div id="tableContent" class="ui stackable four cards"></div>
+</div>
+
+<!-- Template pour carte -->
+<template id="row">
+    <div class="ui card custom-card">
+        <div class="content">
+            <div class="header center aligned" style="text-transform: uppercase;">{{name}}</div>
+            <div class="meta center aligned">
+                <div class="ui orange label">{{family_name}}</div>
+            </div>
+        </div>
+
+        <div class="image imageCard">
+            <img src="{{img_src}}" alt="Image du héros">
+        </div>
+
+        <div class="content">
+            <p class="description">{{description}}</p>
+        </div>
+
+        <div class="extra content stats">
+            <div>❤️ HP : <strong>{{hp}}</strong></div>
+            <div>⚡ Énergie : <strong>{{energy}}</strong></div>
+            <div>🗡️ Attaque : <strong>{{attack}}</strong></div>
+            <div>🛡️ Défense : <strong>{{defense}}</strong></div>
+        </div>
+
+        <div class="ui bottom attached blue button">
+            💰 {{price}} $ - Recruter
+        </div>
+    </div>
+</template>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async function () {
+        async function getCards() {
+            // Define the URL of the API endpoint
+            const apiUrl = 'http://localhost:8088/cards/all'; // Replace with your API URL
+
+            try {
+                // Use the fetch function to get data from the API
+                const response = await fetch(apiUrl);
+
+                // Handle the response by converting it to JSON
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json(); // Parse the JSON data
+                console.log(data); // Log the JSON data
+                return data;
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+                throw error; // Re-throw the error to handle it outside if needed
+            }
+        }
+
+        const template = document.querySelector("#row");
+        const container = document.querySelector("#tableContent");
+
+        try {
+            const cards = await getCards();
+
+            for (const card of cards) {
+                const clone = document.importNode(template.content, true);
+                let html = clone.firstElementChild.innerHTML;
+
+                html = html
+                    .replace(/\{\{name\}\}/g,        card.name)
+                    .replace(/\{\{family_name\}\}/g, card.familyName)
+                    .replace(/\{\{img_src\}\}/g,     card.imgSrc)
+                    .replace(/\{\{description\}\}/g, card.description)
+                    .replace(/\{\{hp\}\}/g,          card.hp)
+                    .replace(/\{\{energy\}\}/g,      card.energy)
+                    .replace(/\{\{attack\}\}/g,      card.attack)
+                    .replace(/\{\{defense\}\}/g,     card.defense)
+                    .replace(/\{\{price\}\}/g,       card.price);
+
+                clone.firstElementChild.innerHTML = html;
+                container.appendChild(clone);
+            }
+        } catch (error) {
+            console.error('Error loading cards:', error);
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+Commande à executer dans un terminal pour lancer le reverse proxy. Bien sur il faut adapter le chemin d'accès au chemin sur son appareil.
+
+docker run --name my-custom-asi-nginx-container -p 8088:8088 --mount type=bind,src="//c/Users/vince/Documents/CPE/ptittonnerre2/nginx/nginx.conf",dst=/etc/nginx/nginx.conf,readonly --rm nginx

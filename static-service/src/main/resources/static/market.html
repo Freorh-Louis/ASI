@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marché - Cartes à Acheter</title>
+
+    <!-- ✅ CSS Semantic UI + ton style -->
+    <link rel="stylesheet" href="../lib/Semantic-UI-CSS-master/semantic.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+
+    <!-- ✅ jQuery d'abord, sinon Semantic UI plante -->
+    <script src="../lib/jquery-3.3.1.min.js"></script>
+    <script src="../lib/Semantic-UI-CSS-master/semantic.min.js"></script>
+</head>
+
+<body>
+<div class="ui clearing segment">
+    <h3 class="ui right floated header">
+        <i class="user circle outline icon"></i>
+        <div class="content">
+            <span id="userNameId">Jdoe</span>
+            <div class="sub header"><span>5000</span>$</div>
+        </div>
+    </h3>
+
+    <h3 class="ui left floated header">
+        <i class="shopping cart icon"></i>
+        <div class="content">
+            Market
+            <div class="sub header">Buy cards from other players</div>
+        </div>
+    </h3>
+
+    <div class="ui right floated">
+        <a href="cardList.html" class="ui green button">
+            <i class="arrow left icon"></i> Return to My Cards
+        </a>
+    </div>
+</div>
+
+<!-- ✅ Zone d'affichage des cartes -->
+<div class="ui container">
+    <h3 class="ui aligned header">Cartes disponibles à l'achat</h3>
+    <div id="marketContent" class="ui stackable four cards"></div>
+</div>
+
+<!-- ✅ Template pour une carte -->
+<template id="cardTemplate">
+    <div class="ui card">
+        <div class="content">
+            <div class="header center aligned">{{name}}</div>
+            <div class="meta center aligned">
+                <span class="ui orange label">{{element}}</span>
+            </div>
+        </div>
+        <div class="image">
+            <img src="{{img_src}}" alt="card">
+        </div>
+        <div class="content">
+            <p class="description">{{description}}</p>
+        </div>
+        <div class="extra content">
+            <div>❤️ HP: <strong>{{hp}}</strong></div>
+            <div>⚡ Energy: <strong>{{energy}}</strong></div>
+            <div>🛡️ Defense: <strong>{{defense}}</strong></div>
+            <div>🗡️ Attack: <strong>{{attack}}</strong></div>
+        </div>
+        <div class="ui bottom attached blue button buy-btn" data-id="{{id}}" data-price="{{price}}">
+            💰 {{price}} $ - Acheter
+        </div>
+    </div>
+</template>
+
+<!-- ✅ Script personnalisé -->
+<script>
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user?.id;
+
+    if (!userId) {
+        alert("Utilisateur non connecté");
+        window.location.href = "login.html";
+    }
+
+    function loadUserInfo() {
+        fetch(`http://localhost:8088/users/${userId}`)
+            .then(res => res.json())
+            .then(user => {
+                document.querySelector("#userNameId").textContent = user.name;
+                document.querySelector("#userNameId").nextElementSibling.querySelector("span").textContent = user.wallet;
+            });
+    }
+
+    function loadMarketCards() {
+        fetch("http://localhost:8088/market/sale")
+            .then(res => res.json())
+            .then(cards => {
+                const container = document.querySelector("#marketContent");
+                const template = document.querySelector("#cardTemplate");
+                container.innerHTML = "";
+
+                cards.forEach(entry => {
+                    const card = entry.card;
+                    const html = template.innerHTML
+                        .replace(/{{name}}/g, card.name)
+                        .replace(/{{description}}/g, card.description)
+                        .replace(/{{element}}/g, card.element)
+                        .replace(/{{hp}}/g, card.hp)
+                        .replace(/{{energy}}/g, card.energy)
+                        .replace(/{{defense}}/g, card.defense)
+                        .replace(/{{attack}}/g, card.attack)
+                        .replace(/{{img_src}}/g, card.imageUrl || "")
+                        .replace(/{{price}}/g, entry.prix)
+                        .replace(/{{id}}/g, card.id);
+
+                    const clone = document.createElement("div");
+                    clone.innerHTML = html;
+                    container.appendChild(clone.firstElementChild);
+                });
+
+                setupBuyButtons();
+            });
+    }
+
+    function setupBuyButtons() {
+        document.querySelectorAll(".buy-btn").forEach(button => {
+            button.addEventListener("click", () => {
+                const cardId = button.getAttribute("data-id");
+                const price = button.getAttribute("data-price");
+
+                fetch("http://localhost:8088/market/transaction", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: new URLSearchParams({
+                        cardId,
+                        prix: price,
+                        vendeurId: userId,
+                        transactionType: "BUY"
+                    })
+                })
+                    .then(res => {
+                        if (!res.ok) throw new Error("Erreur lors de l'achat");
+                        return res.json();
+                    })
+                    .then(() => {
+                        alert("Achat effectué !");
+                        loadMarketCards();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert("Erreur lors de l'achat");
+                    });
+            });
+        });
+    }
+
+    $(function () {
+        loadUserInfo();
+        loadMarketCards();
+    });
+</script>
+
+</body>
+</html>
